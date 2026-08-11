@@ -1,0 +1,39 @@
+# ============================================
+# Project Ascend - Terraform Git Ignore Rules
+# ============================================
+
+# Terraform working directories
+**/.terraform/
+
+# Terraform state files
+*.tfstate
+*.tfstate.*
+
+# Terraform plan files
+*.tfplan
+
+# Terraform crash logs
+crash.log
+crash.*.log
+
+# Terraform variable files
+# These may contain passwords, keys or secrets.
+*.tfvars
+*.tfvars.json
+
+# Terraform override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform CLI configuration
+.terraformrc
+terraform.rc
+
+# VS Code local settings
+.vscode/
+
+# Windows artifacts
+Thumbs.db
+Desktop.ini
