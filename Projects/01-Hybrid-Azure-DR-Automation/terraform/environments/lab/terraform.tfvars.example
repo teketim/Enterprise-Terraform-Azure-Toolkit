@@ -1,0 +1,14 @@
+# Copy this file to terraform.tfvars before running Terraform locally.
+# terraform.tfvars is ignored by Git and should not be committed.
+
+subscription_id     = "00000000-0000-0000-0000-000000000000"
+resource_group_name = "rg-ascend-dr-lab-centralus-001"
+location            = "centralus"
+
+tags = {
+  Environment = "Lab"
+  Project     = "Project-ASCEND"
+  Workload    = "Hybrid-DR"
+  ManagedBy   = "Terraform"
+  Owner       = "teketim"
+}
