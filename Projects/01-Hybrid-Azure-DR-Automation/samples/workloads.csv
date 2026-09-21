@@ -1,0 +1,6 @@
+ServerName,Environment,Platform,OperatingSystem,IPAddress,Application,Owner,Criticality,RPO,RTO,BackupStatus,Dependencies,DRTier
+AD01,Production,VMware,Windows Server 2022,10.20.10.10,Active Directory/DNS,Infrastructure,Critical,15 minutes,1 hour,Healthy,None,Tier 0
+DB01,Production,VMware,Windows Server 2022,10.20.20.20,SQL Database,Database Team,Critical,30 minutes,2 hours,Healthy,AD01,Tier 1
+APP01,Production,Hyper-V,Windows Server 2022,10.20.20.30,ERP Application,Application Team,Critical,30 minutes,2 hours,Healthy,"AD01;DB01",Tier 1
+FILE01,Production,Hyper-V,Windows Server 2019,10.20.30.40,File Services,Infrastructure,High,4 hours,8 hours,Healthy,AD01,Tier 2
+LEGACY01,Production,VMware,Windows Server 2012 R2,10.20.30.50,Legacy Reporting,,Medium,,,Unknown,DB01,
