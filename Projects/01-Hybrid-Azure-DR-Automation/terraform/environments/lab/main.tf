@@ -5,3 +5,15 @@ module "resource_group" {
   location = var.location
   tags     = var.tags
 }
+module "networking" {
+  source = "../../modules/networking"
+
+  resource_group_name = module.resource_group.name
+  location            = module.resource_group.location
+
+  hub_vnet_name     = var.hub_vnet_name
+  hub_address_space = var.hub_address_space
+  hub_subnets       = var.hub_subnets
+
+  tags = var.tags
+}

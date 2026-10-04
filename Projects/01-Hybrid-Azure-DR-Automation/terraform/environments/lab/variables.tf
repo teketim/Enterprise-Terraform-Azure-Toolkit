@@ -28,3 +28,27 @@ variable "tags" {
     Owner       = "teketim"
   }
 }
+variable "hub_vnet_name" {
+  description = "Name of the hub virtual network."
+  type        = string
+  default     = "vnet-ascend-hub-centralus-001"
+}
+
+variable "hub_address_space" {
+  description = "Address space for the hub virtual network."
+  type        = list(string)
+
+  default = [
+    "10.10.0.0/16"
+  ]
+}
+
+variable "hub_subnets" {
+  description = "Hub subnet names and address prefixes."
+  type        = map(string)
+
+  default = {
+    "snet-management" = "10.10.1.0/24"
+    "GatewaySubnet"   = "10.10.255.0/27"
+  }
+}
