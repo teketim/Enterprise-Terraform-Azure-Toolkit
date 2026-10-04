@@ -52,3 +52,28 @@ variable "hub_subnets" {
     "GatewaySubnet"   = "10.10.255.0/27"
   }
 }
+variable "dr_vnet_name" {
+  description = "Name of the DR spoke virtual network."
+  type        = string
+  default     = "vnet-ascend-dr-centralus-001"
+}
+
+variable "dr_address_space" {
+  description = "Address space for the DR spoke virtual network."
+  type        = list(string)
+
+  default = [
+    "10.20.0.0/16"
+  ]
+}
+
+variable "dr_subnets" {
+  description = "DR spoke subnet names and address prefixes."
+  type        = map(string)
+
+  default = {
+    "snet-application" = "10.20.1.0/24"
+    "snet-data"        = "10.20.2.0/24"
+    "snet-recovery"    = "10.20.3.0/24"
+  }
+}

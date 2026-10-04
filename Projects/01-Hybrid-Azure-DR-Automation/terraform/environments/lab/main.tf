@@ -15,5 +15,9 @@ module "networking" {
   hub_address_space = var.hub_address_space
   hub_subnets       = var.hub_subnets
 
+  dr_vnet_name     = var.dr_vnet_name
+  dr_address_space = var.dr_address_space
+  dr_subnets       = var.dr_subnets
+
   tags = var.tags
 }
