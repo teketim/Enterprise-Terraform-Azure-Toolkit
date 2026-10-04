@@ -1,0 +1,31 @@
+
+=========================================
+ Project ASCEND - DR Readiness Assessment
+=========================================
+
+
+DR Readiness Results
+--------------------
+
+Category       Check                       Status Detail
+--------       -----                       ------ ------
+Authentication Azure CLI authentication    PASS   Authenticated to Azure subscription: Project-ASCEND-Azure-Lab
+Foundation     Resource Group              PASS   rg-ascend-dr-lab-centralus-001 exists in centralus
+Networking     Hub VNet                    PASS   vnet-ascend-hub-centralus-001 found
+Networking     DR VNet                     PASS   vnet-ascend-dr-centralus-001 found
+Networking     Hub subnet: snet-management PASS   Subnet exists
+Networking     Hub subnet: GatewaySubnet   PASS   Subnet exists
+Networking     DR subnet: snet-application PASS   Subnet exists
+Networking     DR subnet: snet-data        PASS   Subnet exists
+Networking     DR subnet: snet-recovery    PASS   Subnet exists
+Connectivity   Hub to DR peering           PASS   Peering state: Connected
+Connectivity   DR to Hub peering           PASS   Peering state: Connected
+
+
+Summary
+-------
+Total Checks : 11
+Passed       : 11
+Failed       : 0
+
+DR network foundation is READY.
