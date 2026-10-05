@@ -1,0 +1,85 @@
+name: Project ASCEND Validation
+
+on:
+  push:
+    branches:
+      - main
+      - feature/hybrid-azure-dr-automation
+    paths:
+      - "Projects/01-Hybrid-Azure-DR-Automation/**"
+      - ".github/workflows/project-ascend-validation.yml"
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "Projects/01-Hybrid-Azure-DR-Automation/**"
+      - ".github/workflows/project-ascend-validation.yml"
+
+permissions:
+  contents: read
+
+env:
+  TF_IN_AUTOMATION: true
+  TF_DIR: Projects/01-Hybrid-Azure-DR-Automation/terraform/environments/lab
+  PROJECT_DIR: Projects/01-Hybrid-Azure-DR-Automation
+
+jobs:
+  terraform-validation:
+    name: Terraform Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.15.8
+
+      - name: Terraform version
+        run: terraform version
+
+      - name: Terraform formatting check
+        run: terraform fmt -check -recursive "${{ env.PROJECT_DIR }}/terraform"
+
+      - name: Terraform initialization
+        run: terraform -chdir="${{ env.TF_DIR }}" init -backend=false
+
+      - name: Terraform validation
+        run: terraform -chdir="${{ env.TF_DIR }}" validate -no-color
+
+  powershell-analysis:
+    name: PowerShell Static Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module PSScriptAnalyzer -Scope CurrentUser -Force
+
+      - name: Analyze PowerShell scripts
+        shell: pwsh
+        run: |
+          $scriptPath = Join-Path $env:GITHUB_WORKSPACE `
+            "Projects/01-Hybrid-Azure-DR-Automation/powershell"
+
+          $results = Invoke-ScriptAnalyzer `
+            -Path $scriptPath `
+            -Recurse `
+            -Severity Error,Warning `
+            -ExcludeRule PSAvoidUsingWriteHost
+
+          if ($results) {
+              $results | Format-Table -AutoSize
+              Write-Error "PSScriptAnalyzer detected issues."
+              exit 1
+          }
+
+          Write-Host "PowerShell static analysis passed."
