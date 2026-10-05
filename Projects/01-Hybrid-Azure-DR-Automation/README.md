@@ -1,135 +1,104 @@
-# Project 01 — Enterprise Hybrid Azure DR & Automation
+# Project ASCEND — Enterprise Hybrid Azure DR & AI Operations Automation
 
 ## Executive Summary
 
-This project models how a senior infrastructure engineer would assess, design, automate, test, and document a hybrid disaster recovery solution for an enterprise moving recovery capabilities into Microsoft Azure.
+Project ASCEND is an enterprise-style Azure infrastructure engineering portfolio project demonstrating how a senior infrastructure engineer can design, automate, validate, and operate a hybrid disaster recovery foundation in Microsoft Azure.
 
-The fictional organization operates VMware and Hyper-V workloads on-premises and requires an Azure-based DR target that improves resiliency while preserving operational control, security, and recoverability.
+The project combines:
 
-## Business Scenario
+- Microsoft Azure
+- Terraform Infrastructure as Code
+- PowerShell operational automation
+- Hub-and-spoke networking
+- Disaster recovery architecture
+- Microsoft Foundry / AI administration readiness
+- Azure quota and platform governance
+- GitHub Actions CI/CD
+- Cost-conscious cloud engineering
 
-Contoso Manufacturing operates business-critical Windows workloads in an on-premises datacenter. Existing recovery procedures rely on local backup infrastructure and manual recovery processes. Leadership requires a modern DR design in Azure with documented recovery objectives, repeatable deployment, operational monitoring, and a tested failover/failback process.
+The environment models a fictional enterprise transitioning disaster recovery capabilities from an on-premises VMware / Hyper-V environment into Microsoft Azure.
 
-### Primary Objectives
+This repository emphasizes not only deployment, but also **operational validation, recoverability, governance, automation, and engineering decision-making**.
 
-- Establish a secure Azure DR landing zone.
-- Classify workloads by business criticality.
-- Define and validate RPO/RTO targets.
-- Identify application, DNS, identity, storage, and network dependencies.
-- Deploy core Azure DR infrastructure with Terraform.
-- Assess workload readiness with PowerShell.
-- Document migration risk, rollback, failover, failback, and DR testing.
-- Validate code through GitHub Actions.
+---
 
-## Architecture Principles
+# Project Status
 
-1. **Recoverability before migration speed** — a migration is not successful unless recovery is understood and tested.
-2. **Infrastructure as Code** — repeatable deployment reduces configuration drift and manual error.
-3. **Least privilege** — RBAC and network controls are defined intentionally.
-4. **Observability by design** — monitoring and logging are part of the platform, not an afterthought.
-5. **Dependency-aware recovery** — applications are restored in an order that respects identity, DNS, database, storage, and application dependencies.
-6. **Documented rollback** — every migration/cutover decision must include a reversible path where feasible.
+**Portfolio MVP: Complete**
 
-## Target Architecture
+Current implementation includes:
+
+- Azure Resource Group
+- Hub virtual network
+- DR spoke virtual network
+- Five Azure subnets
+- Bidirectional VNet peering
+- Modular Terraform
+- PowerShell DR readiness validation
+- PowerShell AI administration readiness validation
+- AI operations runbook
+- GitHub Actions Terraform validation
+- GitHub Actions PowerShell static analysis
+- Successful Azure deployment validation
+- Successful CI pipeline execution
+
+---
+
+# Business Scenario
+
+A fictional enterprise operates VMware and Hyper-V workloads within an on-premises datacenter.
+
+Existing recovery procedures depend heavily on local infrastructure and manual recovery processes.
+
+The organization requires an Azure-based DR architecture capable of supporting:
+
+- Improved resiliency
+- Repeatable infrastructure deployment
+- Defined recovery tiers
+- Hybrid connectivity
+- Application dependency planning
+- Operational health validation
+- AI workload governance
+- Monitoring integration
+- Cost control
+- Automated quality validation
+
+The objective is not simply to create Azure resources.
+
+The objective is to demonstrate how an infrastructure engineer approaches **architecture, automation, operational stability, disaster recovery, governance, risk, and validation**.
+
+---
+
+# Implemented Architecture
 
 ```mermaid
 flowchart LR
-    subgraph OnPrem[On-Premises Datacenter]
-        HV[Hyper-V / VMware]
-        AD[Active Directory / DNS]
-        APP[Application Servers]
-        DB[Database Servers]
-        FILE[File Services]
+
+    subgraph OnPrem["On-Premises / Hybrid Environment"]
+        HV["VMware / Hyper-V"]
+        AD["Active Directory / DNS"]
+        APP["Application Workloads"]
+        DB["Database Workloads"]
     end
 
-    VPN[Site-to-Site VPN / ExpressRoute Concept]
+    HYBRID["VPN / ExpressRoute<br/>Architecture Concept"]
 
-    subgraph Azure[Microsoft Azure DR Region]
-        HUB[Hub VNet]
-        FW[Firewall / NSG Controls]
-        SPOKE[DR Spoke VNet]
-        RSV[Recovery Services Vault]
-        STG[Storage]
-        LAW[Log Analytics Workspace]
-        MON[Azure Monitor]
+    subgraph AzureHub["Azure Hub - 10.10.0.0/16"]
+        MGMT["snet-management<br/>10.10.1.0/24"]
+        GW["GatewaySubnet<br/>10.10.255.0/27"]
     end
 
-    HV --> VPN
-    AD --> VPN
-    APP --> VPN
-    DB --> VPN
-    FILE --> VPN
-    VPN --> HUB
-    HUB --> FW
-    FW --> SPOKE
-    SPOKE --> RSV
-    SPOKE --> STG
-    SPOKE --> LAW
-    LAW --> MON
-```
+    subgraph AzureDR["Azure DR Spoke - 10.20.0.0/16"]
+        APPSUB["snet-application<br/>10.20.1.0/24"]
+        DATASUB["snet-data<br/>10.20.2.0/24"]
+        RECSUB["snet-recovery<br/>10.20.3.0/24"]
+    end
 
-## Recovery Tier Model
+    HV --> HYBRID
+    AD --> HYBRID
+    APP --> HYBRID
+    DB --> HYBRID
 
-| Tier | Example Workload | Target RPO | Target RTO | Recovery Priority |
-|---|---|---:|---:|---|
-| Tier 0 | AD / DNS / Identity | 15 min | 1 hr | First |
-| Tier 1 | Database / Revenue-Critical Apps | 30 min | 2 hr | Second |
-| Tier 2 | Departmental Applications | 4 hr | 8 hr | Third |
-| Tier 3 | File / Low-Criticality Services | 24 hr | 24 hr | Fourth |
+    HYBRID -. Future Connectivity .-> GW
 
-## Planned Deliverables
-
-### Terraform
-- Resource groups
-- Hub/spoke virtual networks
-- Subnets and NSGs
-- Route tables
-- Storage account
-- Recovery Services Vault
-- Log Analytics workspace
-- Monitoring resources
-
-### PowerShell
-- `Get-WorkloadInventory.ps1`
-- `Test-HybridDRReadiness.ps1`
-- `New-DRReadinessReport.ps1`
-
-### Operations Documentation
-- Architecture overview
-- Design decisions
-- Assumptions and constraints
-- Migration plan
-- Risk register
-- DR test plan
-- Failover runbook
-- Failback runbook
-- Rollback plan
-- Lessons learned
-
-### CI/CD
-GitHub Actions will validate:
-- Terraform formatting
-- Terraform initialization and validation
-- Terraform linting
-- PowerShell static analysis
-
-## Repository Structure
-
-```text
-01-Hybrid-Azure-DR-Automation/
-├── README.md
-├── docs/
-├── terraform/
-│   ├── modules/
-│   └── environments/lab/
-├── powershell/
-├── samples/
-├── screenshots/
-└── .github/workflows/
-```
-
-## Portfolio Positioning
-
-This project is intentionally structured as an engineering case study rather than a basic cloud lab. It is designed to demonstrate architecture depth, migration planning, operational stability, automation, disaster recovery, and production-style documentation.
-
-> All company names, workloads, IP addresses, recovery objectives, and scenarios are fictionalized for portfolio and training purposes.
+    AzureHub <-->|Bidirectional VNet Peering| AzureDR
